@@ -1,0 +1,27 @@
+{
+  "name": "todolist",
+  "version": "1.0.0",
+  "description": "Todo made using PostgreSQL Sequelize NodeJS Express",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Apoorva Raj Bhadani",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "express-handlebars": "^5.3.2",
+    "node-fetch": "^2.6.1",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.3",
+    "redis": "^3.1.2",
+    "sequelize": "^6.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}

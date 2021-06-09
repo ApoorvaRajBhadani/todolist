@@ -1,0 +1,26 @@
+<%- include("header") -%>
+
+  <div class="box" id="heading">
+    <h1>Your given task</h1>
+  </div>
+
+  <div class="box">
+
+          <div class="item">
+            <form action="/delete" method="post">
+              <input type="checkbox" value="<%=taskid%>"name="checkbox" onchange="this.form.submit()">
+            </form>
+            <p>
+              Check this box if task is completed
+              </p>
+          </div>
+          <div class="item">
+            <form action="/update/<%=taskid%>" method="post">
+              <input type="text" name="desc" value="<%=taskdesc%>">
+              <input type="submit" value="update" name="id">
+            </form>
+          </div>
+
+  </div>
+
+<%- include("footer") -%>
