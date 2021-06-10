@@ -5,6 +5,7 @@ const path = require('path');
 const fetch = require('node-fetch');
 const expressAsyncHandler = require('express-async-handler');
 const redis = require('redis');
+const amqp = require('amqplib/callback_api');
 require('dotenv').config();
 //Database
 const db = require('./config/database');
@@ -14,7 +15,21 @@ db.authenticate()
 .catch(err=> console.log('Error: ' + err))
 
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const AMQP_CONN_URL = process.env.AMQP_URL;
+
 const client = redis.createClient(REDIS_PORT);
+let amqpChannel = null;
+amqp.connect(AMQP_CONN_URL, function (connectionErr, connection) {
+  if(connectionErr){
+    throw connectionErr;
+  }
+  connection.createChannel(function (channelErr, channel) {
+    if(channelErr){
+      throw channelErr;
+    }
+     amqpChannel = channel;
+  });
+});
 
 const app = express();
 app.set('view engine','ejs');
@@ -38,20 +53,24 @@ app.get('/',(req,res)=>{
 });
 
 app.post("/",(req,res)=>{
-  const body = {
-      desc: req.body.newItem
-  };
-  fetch('http://localhost:3000/api/todos', {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-  }).then(resp => resp.json())
-    .then(json => {
-      console.log(json);
-      res.redirect("/");
-    });
+  const desc = req.body.newItem;
+  amqpChannel.sendToQueue('test',Buffer.from(desc));
+  console.log('Message sent to queue');
+  res.redirect("/");
+  // const body = {
+  //     desc: req.body.newItem
+  // };
+  // fetch('http://localhost:3000/api/todos', {
+  //     method: 'POST',
+  //     body: JSON.stringify(body),
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     }
+  // }).then(resp => resp.json())
+  //   .then(json => {
+  //     console.log(json);
+  //     res.redirect("/");
+  //   });
 });
 
 app.post("/delete",(req,res)=>{
